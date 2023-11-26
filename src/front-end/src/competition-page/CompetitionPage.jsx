@@ -14,6 +14,8 @@ import OutputDetails from "./OutputDetails";
 import ThemeDropdown from "./ThemeDropdown";
 import LanguagesDropdown from "./LanguagesDropdown";
 
+import { useUser } from "../UserContext";
+
 const pythonDefault = `# some comment`; // probably have a diff default for each problem
 
 const CompetitionCode = () => {
@@ -27,6 +29,11 @@ const CompetitionCode = () => {
 
   const enterPress = useKeyPress("Enter"); // a hook that returns true if enter is pressed
   const ctrlPress = useKeyPress("Control"); // a hook that returns true if cntrl is pressed
+
+  const { user } = useUser();
+  if (!user) {
+    alert("not logged in");
+  }
 
   const onSelectChange = (sl) => {
     console.log("selected Option...", sl);
@@ -56,44 +63,62 @@ const CompetitionCode = () => {
   };
 
   // IMPORTANT NOTE: THIS NEEDS TO RUN HIDDEN TESTS AS WELL
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setProcessingFinal(true);
 
-    const formData = {
-      language_id: language.id,
-      // encode source code in base64
-      source_code: btoa(code),
-      stdin: btoa(customInput),
+    const requestData = {
+      roomId: 111,
+      userId: user.userId,
+      code: code,
     };
 
-    console.log(import.meta.env.VITE_RAPID_API_HOST);
-    // Parameters for axios request to Judge0
-    const options = {
-      method: "POST",
-      url: import.meta.env.VITE_JUDGE0_SUBMISSIONS_URL,
-      params: { base64_encoded: "true", fields: "*" },
-      headers: {
-        "content-type": "application/json",
-        "Content-Type": "application/json",
-        "X-RapidAPI-Host": import.meta.env.VITE_RAPID_API_HOST,
-        "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_KEY,
-      },
-      data: formData,
-    };
-
-    // Makes get request
-    axios
-      .request(options)
-      .then(function (response) {
-        console.log("res.data", response.data);
-        const token = response.data.token;
-        checkStatus(token);
-      })
-      .catch((err) => {
-        let error = err.response ? err.response.data : err;
+    try {
+        const response = await axios.post("/games/submit-code", requestData);
+        const scores = response.data;
+        // Handle scores or any other response data as needed
+        console.log("Scores:", scores);
+    } catch (error) {
+        // Handle errors
+        console.error("Error submitting code:", error);
+    } finally {
         setProcessingFinal(false);
-        console.log(error);
-      });
+    }
+
+    // const formData = {
+    //   language_id: language.id,
+    //   // encode source code in base64
+    //   source_code: btoa(code),
+    //   stdin: btoa(customInput),
+    // };
+
+    // console.log(import.meta.env.VITE_RAPID_API_HOST);
+    // // Parameters for axios request to Judge0
+    // const options = {
+    //   method: "POST",
+    //   url: import.meta.env.VITE_JUDGE0_SUBMISSIONS_URL,
+    //   params: { base64_encoded: "true", fields: "*" },
+    //   headers: {
+    //     "content-type": "application/json",
+    //     "Content-Type": "application/json",
+    //     "X-RapidAPI-Host": import.meta.env.VITE_RAPID_API_HOST,
+    //     "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_KEY,
+    //   },
+    //   data: formData,
+    // };
+
+    // // Makes get request
+    // axios
+    //   .request(options)
+    //   .then(function (response) {
+    //     console.log("res.data", response.data);
+    //     const token = response.data.token;
+    //     checkStatus(token);
+    //   })
+    //   .catch((err) => {
+    //     let error = err.response ? err.response.data : err;
+    //     setProcessingFinal(false);
+    //     console.log(error);
+    //   });
   };
 
   const handleCompile = () => {

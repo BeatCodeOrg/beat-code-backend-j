@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Client } from '@stomp/stompjs';
 import "react-responsive-modal/styles.css";
 import "./SignUp.css";
 
 function SignUp() {
-
+    const [stompClient, setStompClient] = useState(null);
+    const [signUpStatus, setSignUpStatus] = useState(null);
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -13,7 +14,7 @@ function SignUp() {
 
     useEffect(() => {
         const client = new Client({
-            brokerURL: 'ws://localhost:8080/gs-guide-websocket'
+            brokerURL: 'ws://localhost:5173/gs-guide-websocket'
         });
 
         client.onConnect = () => {
@@ -50,28 +51,62 @@ function SignUp() {
         setFormData(updatedFormData);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        
         // Add validation for passwords match or other checks
         if (formData.password !== formData.passwordVerify) {
-            alert('Passwords do not match!');
-            return;
+          alert('Passwords do not match!');
+          return;
         }
-
-        //send form data to backend
-        if (stompClient && stompClient.connected) {
-            stompClient.publish({
-                destination: "/app/registerUser",
-                body: JSON.stringify(formData)
-            });
-        } else {
-            console.error("WebSocket is not connected.");
+      
+        try {
+          const response = await fetch("http://localhost:5173/users/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+      
+          if (response.ok) {
+            const data = await response.json();
+            // Handle the response data as needed
+            console.log("User created successfully:", data);
+            // Redirect or perform other actions after successful user creation
+          } else {
+            // Handle the case where the server returns an error
+            console.error("User creation failed");
+          }
+        } catch (error) {
+          // Handle any network or other errors that may occur during the request
+          console.error("Error during user creation:", error);
         }
+      };
+      
+
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     // Add validation for passwords match or other checks
+    //     if (formData.password !== formData.passwordVerify) {
+    //         alert('Passwords do not match!');
+    //         return;
+    //     }
+
+    //     //send form data to backend
+    //     if (stompClient && stompClient.connected) {
+    //         stompClient.publish({
+    //             destination: "/app/registerUser",
+    //             body: JSON.stringify(formData)
+    //         });
+    //     } else {
+    //         console.error("WebSocket is not connected.");
+    //     }
 
 
-        console.log('Form Data:', formData);
-        // Further submission logic here...
-    };
+    //     console.log('Form Data:', formData);
+    //     // Further submission logic here...
+    // };
 
 
     return (
@@ -128,12 +163,12 @@ function SignUp() {
                 />
             </div>
             <div className="sign-up-btn-container">
-                <button className="sign-up-button">
+                <button type="submit" className="sign-up-button">
                     Compile
                 </button>
             </div>
 
-            <div className="alt-signup-options">
+            {/* <div className="alt-signup-options">
                 <div className="alt-signup-divider">
                     <span className="alt-signup-divider-line"></span>
                     <span className="alt-signup-divider-text">OR SIGN UP WITH</span>
@@ -147,7 +182,7 @@ function SignUp() {
                     <img src="src/assets/github_logo.png" alt="GitHub" /> GitHub
                     </button>
                 </div>
-            </div>
+            </div> */}
             </form>
         </div>
       </>

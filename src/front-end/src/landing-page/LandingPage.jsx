@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
+import { useUser } from "../UserContext";
 import "./popup.css";
 
 function LandingPage() {
   const [showLoginModal, setLoginModal] = useState(false);
-
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const { setUser } = useUser();
   const navigate = useNavigate();
 
   const onOpenModalLogin = () => {
@@ -22,14 +25,41 @@ function LandingPage() {
     setLoginModal(false);
   };
 
-  const onLogin = () => {
-    // form validation
-
-    // make get request to backend to check if user exists
-
-    // if successful, navigate to join page
-    if (true) navigate("/join");
+  const onLogin = async (e) => {
+    e.preventDefault();
+  
+    // Form validation and other logic...
+  
+    try {
+      const response = await fetch("http://localhost:5173/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        const userId = data.userId; // Adjust based on your backend response
+        // Store userId in state or context
+        // For example, you can have a global context to store user information
+        // Update the following line based on your context setup
+        // userContext.setUser({ userId, username, ...otherUserData });
+        setUser({ userId });
+        navigate("/join");
+      } else {
+        // Handle login failure, show error message, etc.
+        console.error("Login failed");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
   };
+  
 
   return (
     <>
@@ -57,7 +87,7 @@ function LandingPage() {
             Test your programming skills with LeetCode style questions in
             friendly competition with old or new friends.
           </p>
-          <div class="nav buttons">
+          <div className="nav buttons">
             <button
               className="btn"
               id="signup"
@@ -95,7 +125,7 @@ function LandingPage() {
           </div>
           <form
             className="validate-form"
-            novalidate="novalidate"
+            noValidate="novalidate"
             onSubmit={onLogin}
           >
             <div className="form-group">
@@ -104,9 +134,9 @@ function LandingPage() {
                 type="text"
                 name="username"
                 placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required=""
-                autocomplete="off"
-                aria-required="true"
               />
             </div>
             <div className="form-group">
@@ -115,9 +145,9 @@ function LandingPage() {
                 name="pass"
                 className="form-control"
                 placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required=""
-                autocomplete="off"
-                aria-required="true"
               />
             </div>
             <button

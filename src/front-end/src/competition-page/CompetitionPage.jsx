@@ -18,7 +18,7 @@ import LanguagesDropdown from "./LanguagesDropdown";
 
 const pythonDefault = `def solution(nums, target):`; // probably have a diff default for each problem
 
-const CompetitionCode = () => {
+const CompetitionCode = ({ players, updatePlayer }) => {
   const [code, setCode] = useState(pythonDefault); // refers to the code we have typed
   const [customInput, setCustomInput] = useState(""); // the custom test cases we have typed
   const [outputDetails, setOutputDetails] = useState(null); // the output details from Judge0
@@ -194,6 +194,17 @@ const CompetitionCode = () => {
         setProcessingFinal(false);
         setOutputDetails(response.data);
         showSuccessToast(`Compiled Successfully!`); // displays success notification
+
+        if (statusId === 3) {
+          updatePlayer(0, (player) => {
+            // Assuming player has a property testCasesPassed
+            player.testCasesPassed += 10;
+            player.pointsGained += 100;
+            player.progress += 99;
+            return player;
+          });
+        }
+
         console.log("response.data", response.data);
         return;
       }

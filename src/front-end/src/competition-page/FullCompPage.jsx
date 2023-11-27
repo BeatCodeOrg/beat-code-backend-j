@@ -7,12 +7,24 @@ import ProgressBar from "./ProgressBar";
 import Timer from "./Timer";
 
 function FullCompPage() {
-  // this will need to be passed in
-    const players = [
-      { username: 'Player1', testCasesPassed: 5, pointsGained: 50, progress: 50, bgcolor: '#2f7fff' },
-      { username: 'Player2', testCasesPassed: 3, pointsGained: 30, progress: 30, bgcolor: '#ff2ff5' },
+    // this will need to be passed in
+    const [players, setPlayers] = useState([
+      { username: 'Player1', testCasesPassed: 0, pointsGained: 0, progress: 1, bgcolor: '#2f7fff' },
+      { username: 'Player2', testCasesPassed: 0, pointsGained: 0, progress: 1, bgcolor: '#ff2ff5' },
       // Add more players as needed
-    ];
+    ]);
+
+    const updatePlayer = (playerId, updateFunction) => {
+      setPlayers((prevPlayers) => {
+        const updatedPlayers = prevPlayers.map((player, index) => {
+          if (index === playerId) {
+            return updateFunction(player);
+          }
+          return player;
+        });
+        return updatedPlayers;
+      });
+    };
 
     const navigate = useNavigate();
 
@@ -48,7 +60,7 @@ function FullCompPage() {
                 <ResizeHandle />
                 <Panel defaultSizePercentage={65}>
                   <div className="right-IDE p-4">
-                    <CompetitionPage />
+                    <CompetitionPage players={players} updatePlayer={updatePlayer}/>
                   </div>
                 </Panel>
               </PanelGroup>

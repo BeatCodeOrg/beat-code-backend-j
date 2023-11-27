@@ -14,9 +14,9 @@ import OutputDetails from "./OutputDetails";
 import ThemeDropdown from "./ThemeDropdown";
 import LanguagesDropdown from "./LanguagesDropdown";
 
-import { useUser } from "../UserContext";
+// import { useUser } from "../UserContext";
 
-const pythonDefault = `# some comment`; // probably have a diff default for each problem
+const pythonDefault = `def solution(nums, target):`; // probably have a diff default for each problem
 
 const CompetitionCode = () => {
   const [code, setCode] = useState(pythonDefault); // refers to the code we have typed
@@ -30,10 +30,10 @@ const CompetitionCode = () => {
   const enterPress = useKeyPress("Enter"); // a hook that returns true if enter is pressed
   const ctrlPress = useKeyPress("Control"); // a hook that returns true if cntrl is pressed
 
-  const { user } = useUser();
-  if (!user) {
-    alert("not logged in");
-  }
+  // const { user } = useUser();
+  // if (!user) {
+  //   alert("not logged in");
+  // }
 
   const onSelectChange = (sl) => {
     console.log("selected Option...", sl);
@@ -125,7 +125,7 @@ const CompetitionCode = () => {
     const formData = {
       language_id: language.id,
       // encode source code in base64
-      source_code: btoa(code),
+      source_code: btoa(code + "\nsolution([2,7,11,15], 9)"),
       stdin: btoa(customInput),
     };
 

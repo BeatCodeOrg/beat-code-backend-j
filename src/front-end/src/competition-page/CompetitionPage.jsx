@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import CodeEditorWindow from "./CodeEditorWindow";
 import axios from "axios";
 import { languageOptions } from "../../constants/languageOptions";
-
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
 import { ToastContainer, toast } from "react-toastify"; // used to put like pop up notifications
 import "react-toastify/dist/ReactToastify.css"; // css file for toastify
 
@@ -26,6 +27,9 @@ const CompetitionCode = ({ players, updatePlayer }) => {
   const [processingFinal, setProcessingFinal] = useState(null); // whether we're processing FINAL submitted code
   const [theme, setTheme] = useState("cobalt"); // the current theme we are using
   const [language, setLanguage] = useState(languageOptions[0]); // the current programming language we are using
+  
+  const [showSubmitModal, setSubmitModal] = useState(false);
+  const [waitingMessage, setWaitingMessage] = useState(false);
 
   const enterPress = useKeyPress("Enter"); // a hook that returns true if enter is pressed
   const ctrlPress = useKeyPress("Control"); // a hook that returns true if cntrl is pressed
@@ -34,6 +38,15 @@ const CompetitionCode = ({ players, updatePlayer }) => {
   // if (!user) {
   //   alert("not logged in");
   // }
+
+  const onOpenModalSubmit = () => {
+    setSubmitModal(true);
+  };
+
+  const onCloseModalclose = () => {
+    setSubmitModal(false);
+    setWaitingMessage(false);
+  };
 
   const onSelectChange = (sl) => {
     console.log("selected Option...", sl);
@@ -63,25 +76,27 @@ const CompetitionCode = ({ players, updatePlayer }) => {
   };
 
   const handleSubmit = async () => {
-    setProcessingFinal(true);
+    setWaitingMessage(true);
 
-    const requestData = {
-      roomId: 111,
-      userId: user.userId,
-      code: code,
-    };
+    // setProcessingFinal(true);
 
-    try {
-        const response = await axios.post("/games/submit-code", requestData);
-        const scores = response.data;
-        // Handle scores or any other response data as needed
-        console.log("Scores:", scores);
-    } catch (error) {
-        // Handle errors
-        console.error("Error submitting code:", error);
-    } finally {
-        setProcessingFinal(false);
-    }
+    // const requestData = {
+    //   roomId: 111,
+    //   userId: user.userId,
+    //   code: code,
+    // };
+
+    // try {
+    //     const response = await axios.post("/games/submit-code", requestData);
+    //     const scores = response.data;
+    //     // Handle scores or any other response data as needed
+    //     console.log("Scores:", scores);
+    // } catch (error) {
+    //     // Handle errors
+    //     console.error("Error submitting code:", error);
+    // } finally {
+    //     setProcessingFinal(false);
+    // }
 
     // const formData = {
     //   language_id: language.id,
@@ -306,7 +321,7 @@ const CompetitionCode = ({ players, updatePlayer }) => {
                 {processing ? "Processing..." : "Run tests"}
               </button>
               <button
-                onClick={handleSubmit}
+                onClick={onOpenModalSubmit}
                 disabled={!code}
                 className={[
                   "mt-4 border-1 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] h-[100%] px-4 py-2 bg-gradient-to-r",
@@ -321,6 +336,30 @@ const CompetitionCode = ({ players, updatePlayer }) => {
           </div>
         </div>
       </div>
+      {/* Submit IN MODAL */}
+      <Modal open={showSubmitModal} onClose={onCloseModalclose} showCloseIcon={!waitingMessage} 
+      closeOnEsc={!waitingMessage} closeOnOverlayClick={!waitingMessage}>
+        <div className="modal-body">
+          {waitingMessage ? (
+          <div>
+            <h2 className="text-2xl font-bold m-4">Submitted!</h2>
+            <p className="mt-5 text-lg">
+            Waiting for other players to submit or the timer to run out. Hang tight!
+            </p>
+          </div>
+        ) : (
+          <div>
+            <h2 className="text-2xl font-bold m-4">Are you sure?</h2>
+            <p>This doesn't run your tests! Make sure to run your code before submitting to keep all your points.
+            No changes are allowed after you submit.</p>
+            <button className="mt-5 py-2 px-5 bg-yellow-300 border-2 border-yellow-800 rounded-full 
+          text-yellow-800 font-bold text-lg shadow-md transition duration-300 hover:bg-yellow-400 focus:outline-none" 
+          onClick={handleSubmit}>Yes, submit now!</button>
+          </div>
+        )}
+
+        </div>
+      </Modal>
     </>
   );
 };

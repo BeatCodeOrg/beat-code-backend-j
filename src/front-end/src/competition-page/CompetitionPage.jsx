@@ -62,7 +62,6 @@ const CompetitionCode = () => {
     }
   };
 
-  // IMPORTANT NOTE: THIS NEEDS TO RUN HIDDEN TESTS AS WELL
   const handleSubmit = async () => {
     setProcessingFinal(true);
 

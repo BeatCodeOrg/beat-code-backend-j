@@ -37,8 +37,10 @@ function LandingPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          id: 1,
           username: username,
           password: password,
+          score: 2,
         }),
       });
   
@@ -50,10 +52,11 @@ function LandingPage() {
         // Update the following line based on your context setup
         // userContext.setUser({ userId, username, ...otherUserData });
         setUser({ userId });
+        console.log("Login successful. Data:", data);
         navigate("/join");
       } else {
         // Handle login failure, show error message, etc.
-        console.error("Login failed");
+        console.error("HTTP error:", response.status);
       }
     } catch (error) {
       console.error("Error during login:", error);

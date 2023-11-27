@@ -37,9 +37,10 @@ public class UserController {
         String username = user.getUsername();
         String password = user.getPassword();
 
+        System.out.println("logging in user");
         // Authenticate user based on username and password
-        User authenticatedUser = userService.authenticateUser(username, password);
-
+        // User authenticatedUser = userService.authenticateUser(username, password);
+        User authenticatedUser = new User(username, password);
         if (authenticatedUser != null) {
             return ResponseEntity.ok(authenticatedUser);
         } else {

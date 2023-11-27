@@ -12,36 +12,36 @@ function SignUp() {
         passwordVerify: ''
     });
 
-    useEffect(() => {
-        const client = new Client({
-            brokerURL: 'ws://localhost:5173/gs-guide-websocket'
-        });
+    // useEffect(() => {
+    //     const client = new Client({
+    //         brokerURL: 'ws://localhost:5173/gs-guide-websocket'
+    //     });
 
-        client.onConnect = () => {
-            console.log('Connected to WebSocket');
-            client.subscribe('/topic/signupStatus', (message) => {
-                setSignUpStatus(JSON.parse(message.body).status);
-            });
-        };
+    //     client.onConnect = () => {
+    //         console.log('Connected to WebSocket');
+    //         client.subscribe('/topic/signupStatus', (message) => {
+    //             setSignUpStatus(JSON.parse(message.body).status);
+    //         });
+    //     };
         
-        client.onWebSocketError = (error) => {
-            console.error('Error with websocket', error);
-        };
+    //     client.onWebSocketError = (error) => {
+    //         console.error('Error with websocket', error);
+    //     };
         
-        client.onStompError = (frame) => {
-            console.error('Broker reported error: ' + frame.headers['message']);
-            console.error('Additional details: ' + frame.body);
-        };
+    //     client.onStompError = (frame) => {
+    //         console.error('Broker reported error: ' + frame.headers['message']);
+    //         console.error('Additional details: ' + frame.body);
+    //     };
 
         
 
-        client.activate();
-        setStompClient(client);
+    //     client.activate();
+    //     setStompClient(client);
 
-        return () => {
-            client.deactivate();
-        };
-    }, []);
+    //     return () => {
+    //         client.deactivate();
+    //     };
+    // }, []);
 
     const handleChange = (e) => {
         const updatedFormData = {

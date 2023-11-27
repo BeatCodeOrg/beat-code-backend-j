@@ -1,4 +1,3 @@
-beatCode/QuestionRepository.class
 beatCode/UserController.class
 beatCode/RoomService.class
 beatCode/RoomController.class
@@ -9,13 +8,11 @@ beatCode/WebConfig.class
 beatCode/ScoreService.class
 beatCode/GameService.class
 beatCode/ScoreResponse.class
-beatCode/QuestionController.class
 beatCode/WebSocketConfig.class
 beatCode/GameController.class
 beatCode/QuestionGenerationRequest.class
 beatCode/Result.class
 beatCode/User.class
-beatCode/QuestionService.class
 beatCode/CodeSubmissionRequest.class
 beatCode/Question.class
 beatCode/Judge.class

@@ -2,6 +2,8 @@ package beatCode;
 
 import org.springframework.stereotype.Service;
 
+import user_authentication.User;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

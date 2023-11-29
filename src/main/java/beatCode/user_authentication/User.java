@@ -17,7 +17,6 @@ public class User {
     @Column(name = "pw")
     private String pw;
 
-    private int score;
     // private boolean isHost;  // when user creates a room, save into session(ishost, true)
     // show the game property selection and run button only when ishost === "true"
 
@@ -74,13 +73,13 @@ public class User {
         return this.pw.equals(enteredPassword);
     }
 
-	public int getScore() {
-		return score;
-	}
+	// public int getScore() {
+	// 	return score;
+	// }
 
-	public void setScore(int score) {
-		this.score = score;
-	}
+	// public void setScore(int score) {
+	// 	this.score = score;
+	// }
 
 
 

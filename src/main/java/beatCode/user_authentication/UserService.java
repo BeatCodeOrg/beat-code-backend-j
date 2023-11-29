@@ -1,12 +1,16 @@
 package beatCode.user_authentication;
 
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class UserService {
+
+    @Autowired
     private UserRepository userRepository;
 
 	// send back the userID from database

@@ -1,4 +1,4 @@
-package user_authentication;
+package beatCode.user_authentication;
 
 public class UserDTO {
     private String username;

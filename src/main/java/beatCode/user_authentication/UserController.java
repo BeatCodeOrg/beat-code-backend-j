@@ -1,4 +1,4 @@
-package user_authentication;
+package beatCode.user_authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

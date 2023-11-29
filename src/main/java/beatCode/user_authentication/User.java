@@ -1,11 +1,11 @@
-package user_authentication;
+package beatCode.user_authentication;
 
-import javax.persistence.*;
+// import javax.persistence.*;
 
-@Entity
+// @Entity
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @Id
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int user_id; // id in the database.  
 
     private String username;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import user_authentication.UserService;
+import beatCode.user_authentication.UserService;
 
 @RestController
 @RequestMapping("/games")

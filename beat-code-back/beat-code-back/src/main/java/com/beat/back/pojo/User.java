@@ -7,7 +7,7 @@ public class User {
 
     public int user_id; // id in the database.
     public String username;
-    public String pw;
+    public String password;
     public int score;
 
     private  String passwordVerify;
@@ -17,12 +17,12 @@ public class User {
         return "User{" +
                 "id=" + user_id +
                 ", username='" + username + '\'' +
-                ", password='" + pw + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 
     public String getPassword() {
-        return pw;
+        return password;
     }
     public String getUsername() {
         return username;

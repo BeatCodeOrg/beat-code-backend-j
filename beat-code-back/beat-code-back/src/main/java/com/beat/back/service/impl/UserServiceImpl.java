@@ -28,11 +28,11 @@ public class UserServiceImpl  implements UserService {
 	 public  ResponseData loginUser(User user) {
 		//查询数据库用户的data
 		 User userInDb =  userMapper.selectByName(user.getUsername());
+		 System.out.println(userInDb.toString());
 		 boolean loginFailed = userInDb == null || !(userInDb.getPassword().equals(user.getPassword()));
 		 if(loginFailed)  return  ResponseData.failedResponse("登录失败!请检查账户或密码!",userInDb);
 		 ResponseData responseData = ResponseData.successResponse("登录成功",null);
-		 return
-				 responseData;
+		 return responseData;
 	 }
 
 

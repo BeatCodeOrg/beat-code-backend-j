@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class User {
 
-    public String id; // id in the database.
+    public int user_id; // id in the database.
     public String username;
-    public String password;
+    public String pw;
     public int score;
 
     private  String passwordVerify;
@@ -15,13 +15,18 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + user_id +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", password='" + pw + '\'' +
                 '}';
     }
 
-
+    public String getPassword() {
+        return pw;
+    }
+    public String getUsername() {
+        return username;
+    }
 
 
 }

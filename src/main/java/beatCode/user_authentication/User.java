@@ -20,6 +20,10 @@ public class User {
     // private boolean isHost;  // when user creates a room, save into session(ishost, true)
     // show the game property selection and run button only when ishost === "true"
 
+    public User() {
+        this.username = "";
+        this.pw = "";
+    }
 
     public User(String username, String pw) {
         this.username = username;

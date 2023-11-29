@@ -18,7 +18,7 @@ public class UserService {
 		User foundUser = userRepository.findUserByUsername(username);
 
         if (foundUser != null)
-            return new AuthenticationResponse(-1, "null", "unauthorized");
+            return new AuthenticationResponse(-1, "null", "exists");
         
         User newUser = new User(username, password);
         userRepository.save(newUser);

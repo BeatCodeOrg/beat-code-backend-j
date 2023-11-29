@@ -64,66 +64,19 @@ public class OpenAIMessenger {
     public static List<ChatMessage> createFewShot(){
         List<ChatMessage> messages = new ArrayList<>();
 
-        ChatMessage systemMessage = new ChatMessage(ChatMessageRole.SYSTEM.value(), "You will be provided with a coding language, a starter code to a coding problem, along with a test case. You will add a main function that will run the given test case and output the results to stdout. You should not attempt to complete the coding problem yourself . Your job is solely to construct a pipeline that will run the test case given some solution. Make sure that all imports and namespaces are set accordingly. Indicate where the input should be placed using <input_code> for everything to run properly. ");
+        ChatMessage systemMessage = new ChatMessage(ChatMessageRole.SYSTEM.value(), "You will be provided with a coding language, some (potentially unimplemented) code to a coding problem, along with a test case. Your job is solely to construct a pipeline that will run the test case with the given code. You will add a main function that will run the given test case and output the results to stdout. You should only use the provided code as a reference, and it must not be inside your output. Instead, you must indicate where this input code should be placed using <input_code> for everything to run properly. Make sure that all imports and namespaces are set accordingly. ");
         messages.add(systemMessage);
 
         String userFirstMsg = """
-                language: java
-                code: '''class Solution {
-                    public int reverse(int x) {
-                       \s
-                    }
-                }'''
-                Test case: 123""";
-        String assistantFirstMsg = """
-                ```java
-                <input_code>
-                public class Main {
-                    public static void main(String[] args) {
-                        Solution solution = new Solution();
-                        int x = 123;
-                        int result = solution.reverse(x);
-                        System.out.println(result);
-                    }
-                }
-                ```
-                """;
-        ChatMessage firstShotUser = new ChatMessage(ChatMessageRole.USER.value(), userFirstMsg);
-        messages.add(firstShotUser);
-        ChatMessage firstShotAssistant = new ChatMessage(ChatMessageRole.ASSISTANT.value(), assistantFirstMsg);
-        messages.add(firstShotAssistant);
-
-        String userSecondMsg = """
-                language: python
-                code: '''class Solution:
-                    def longestPalindrome(self, s: str) -> str:
-                        '''
-                Test case: babad""";
-        String assistantSecondMsg = """
-                ```python
-                <input_code>
-                if __name__ == "__main__":
-                    solution = Solution()
-                    s = "babad"
-                    result = solution.longestPalindrome(s)
-                    print(result)
-                ```
-                """;
-        ChatMessage secondShotUser = new ChatMessage(ChatMessageRole.USER.value(), userSecondMsg);
-        messages.add(secondShotUser);
-        ChatMessage secondShotAssistant = new ChatMessage(ChatMessageRole.ASSISTANT.value(), assistantSecondMsg);
-        messages.add(secondShotAssistant);
-
-        String userThirdMsg = """
                 language: c++
-                code: '''class Solution {
+                code: ```class Solution {
                 public:
                     vector<int> twoSum(vector<int>& nums, int target) {
                        \s
                     }
-                };'''
+                };```
                 Test case: [2,7,11,15], 9""";
-        String assistantThirdMsg = """
+        String assistantFirstMsg = """
                 ```cpp
                 #include <vector>
                 #include <iostream>
@@ -144,12 +97,98 @@ public class OpenAIMessenger {
                    \s
                     return 0;
                 }
+                ```""";
+        ChatMessage firstShotUser = new ChatMessage(ChatMessageRole.USER.value(), userFirstMsg);
+        messages.add(firstShotUser);
+        ChatMessage firstShotAssistant = new ChatMessage(ChatMessageRole.ASSISTANT.value(), assistantFirstMsg);
+        messages.add(firstShotAssistant);
+
+        String userSecondMsg = """
+                language: python
+                code: ```class Solution:
+                    def twoSum(self, nums: List[int], target: int) -> List[int]:
+                                
                 ```
-                """;
+                Test case: [2,7,11,15], 9""";
+        String assistantSecondMsg = """
+                ```python
+                from typing import List
+                                
+                <input_code>
+                                
+                if __name__ == "__main__":
+                    solution = Solution()
+                    nums = [2, 7, 11, 15]
+                    target = 9
+                    result = solution.twoSum(nums, target)
+                    print(result)
+                ```""";
+        ChatMessage secondShotUser = new ChatMessage(ChatMessageRole.USER.value(), userSecondMsg);
+        messages.add(secondShotUser);
+        ChatMessage secondShotAssistant = new ChatMessage(ChatMessageRole.ASSISTANT.value(), assistantSecondMsg);
+        messages.add(secondShotAssistant);
+
+        String userThirdMsg = """
+                language: java
+                code: ```class Solution {
+                    public int[] twoSum(int[] nums, int target) {
+                       \s
+                    }
+                }
+                ```
+                Test case: [2,7,11,15], 9""";
+        String assistantThirdMsg = """
+                ```java
+                import java.util.Arrays;
+                                
+                <input_code>
+                                
+                public class Main {
+                    public static void main(String[] args) {
+                        Solution solution = new Solution();
+                        int[] nums = {2, 7, 11, 15};
+                        int target = 9;
+                        int[] result = solution.twoSum(nums, target);
+                        System.out.println(Arrays.toString(result));
+                    }
+                }
+                ```""";
         ChatMessage thirdShotUser = new ChatMessage(ChatMessageRole.USER.value(), userThirdMsg);
         messages.add(thirdShotUser);
         ChatMessage thirdShotAssistant = new ChatMessage(ChatMessageRole.ASSISTANT.value(), assistantThirdMsg);
         messages.add(thirdShotAssistant);
+
+
+        String userFourthMsg = """
+                language: python
+                code: ```
+                class Solution:
+                    def twoSum(self, nums: List[int], target: int) -> List[int]:
+                        n = len(nums)
+                        for i in range(n - 1):
+                            for j in range(i + 1, n):
+                                if nums[i] + nums[j] == target:
+                                    return [i, j]
+                        return []  # No solution found
+                ```
+                Test case: [3,2,4], 6""";
+        String assistantFourthMsg = """
+                ```python
+                from typing import List
+                                
+                <input_code>
+                                
+                if __name__ == "__main__":
+                    solution = Solution()
+                    nums = [3, 2, 4]
+                    target = 6
+                    result = solution.twoSum(nums, target)
+                    print(result)
+                ```""";
+        ChatMessage fourthShotUser = new ChatMessage(ChatMessageRole.USER.value(), userFourthMsg);
+        messages.add(fourthShotUser);
+        ChatMessage fourthShotAssistant = new ChatMessage(ChatMessageRole.ASSISTANT.value(), assistantFourthMsg);
+        messages.add(fourthShotAssistant);
 
         return messages;
     }
@@ -163,7 +202,7 @@ public class OpenAIMessenger {
 
         ChatCompletionRequest chatCompletionRequest = ChatCompletionRequest
                 .builder()
-                .model("gpt-3.5-turbo-0613")
+                .model("gpt-4")
                 .messages(context)
                 .n(1)
                 .maxTokens(512)

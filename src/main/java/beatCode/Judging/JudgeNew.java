@@ -27,12 +27,12 @@ import java.sql.Statement;
 @Component
 public class JudgeNew {
 
-    static String judge0Key = "4a05387cb9msh3ef958b5a65aa13p1cf839jsna563b458db4a";
+    static String judge0Key = "b98a6ecc77msha33b8745de98b6dp170515jsnd689109fc696";
     static String openAIKey = "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";
     //Each instance will need: user_id and question_id
     static String jdbcUrl = "jdbc:mysql://localhost:3306/beatcode_db";
     static String username = "root";
-    static String password = "2486@1889Gubei";
+    static String password = "password";
 
     //Creates a hashmap that maps from each coding language to its corresponding id
     static HashMap<String, Integer> languageMap = new HashMap<String, Integer>();
@@ -224,15 +224,15 @@ public class JudgeNew {
     // call this function to run code
     // returns the total number of test cases passed
     public int queryJudge0() {
-        System.out.println("entered!");
+//        System.out.println("entered!");
         int totalTestsPassed = 0;
         // do this for every single test case
         for (int i = 0; i < allInputs.size(); i++) {
             try {
-                System.out.println("entered0!");
+//                System.out.println("entered0!");
                 // append this to the end of sourceCode for stdout
                 String augmentedSourceCode = allPrefix.get(i) + "\n" + sourceCode + "\n" + allSuffix.get(i);
-                System.out.println("entered1!");
+//                System.out.println("entered1!");
 
 //                System.out.println("This is sourceCode: " + sourceCode);
 
@@ -254,7 +254,7 @@ public class JudgeNew {
                 payload.addProperty("language_id", languageID); // Python 3.8
                 payload.addProperty("source_code", augmentedSourceCode);
 
-                System.out.println("entered2!");
+//                System.out.println("entered2!");
 
                 // send request
                 OutputStream os = conn.getOutputStream();
@@ -274,7 +274,7 @@ public class JudgeNew {
 
                 // parse into a json object to access data
                 JsonObject response = gson.fromJson(content.toString(), JsonObject.class);
-                System.out.println("entered3!");
+//                System.out.println("entered3!");
 
 
                 if (response != null) {
@@ -303,7 +303,7 @@ public class JudgeNew {
                                 getResultContent.append(getResultInputLine);
                             }
                             getResultIn.close();
-                            System.out.println("entered4!");
+//                            System.out.println("entered4!");
 
                             // parse json response using gson into a json object
                             getResultResponse = gson.fromJson(getResultContent.toString(), JsonObject.class);
@@ -313,10 +313,11 @@ public class JudgeNew {
 
                         } while ((getResultResponse.get("status").getAsJsonObject().get("id").getAsInt() == 1) || (getResultResponse.get("status").getAsJsonObject().get("id").getAsInt() == 2)); // status ID 1 is "In Queue". Status ID 2 is "processing"
 
+                        int status = getResultResponse.get("status").getAsJsonObject().get("id").getAsInt();
 
-//                        System.out.println("This is the response: " + getResultResponse.toString());
+                        System.out.println("This is the response: " + getResultResponse.toString());
                         // Check if response status is 3 (ok) and contains 'stdout' -- if it didn't error
-                        if ((getResultResponse.get("status").getAsJsonObject().get("id").getAsInt() == 3) && (getResultResponse.has("stdout"))) {
+                        if ((status == 3) && (getResultResponse.has("stdout"))) {
                             String encodedStdout = getResultResponse.get("stdout").getAsString();
 
                             try {
@@ -332,7 +333,7 @@ public class JudgeNew {
                                 String expectedOutput = allExpectedOutputs.get(i).trim();
                                 System.out.println("This is the expected output: " + expectedOutput);
 
-                                if (stdoutContent.equals(expectedOutput)) {
+                                if (filterAlphanumeric(stdoutContent).equals(filterAlphanumeric(expectedOutput))) {
                                     System.out.println("testcase passed!");
                                     totalTestsPassed++;
                                 }
@@ -340,9 +341,37 @@ public class JudgeNew {
                                 System.out.println("Error in Base64 decoding: " + e.getMessage());
                             }
                         }
-                        else{
-                            System.out.println("Something appears to be wrong in your code! ");
+                        else if (status == 6) {
+                            System.out.println("Compilation error in code: ");
                             error_message = "error";
+                            return -1;
+                        }
+                        else if (status == 5) {
+                            System.out.println("Time limit exceeded!  ");
+                        }
+                        else if ((status <= 12) && (status >= 7)) {
+                            System.out.println("Runtime error. ");
+
+                            String encodedStderr = getResultResponse.get("stderr").getAsString();
+
+
+                            try {
+//                                encodedStderr = encodedStderr.trim();
+                                encodedStderr = encodedStderr.replaceAll("\n", "");
+                                byte[] decodedBytes = Base64.getDecoder().decode(encodedStderr);
+
+                                // get rid of the extra "\n" at the end of the string
+                                String stderrContent = new String(decodedBytes);
+                                System.out.println(stderrContent);
+
+                            } catch (IllegalArgumentException e) {
+                                System.out.println("Error in Base64 decoding: " + e.getMessage());
+                            }
+                        }
+                        else{
+                            System.out.println("Something appears to be wrong in the system! ");
+                            error_message = "error";
+                            return -1;
                         }
 
                         // pretty print final response: the json response, optional
@@ -359,6 +388,18 @@ public class JudgeNew {
             }
         }
         return totalTestsPassed;
+    }
+
+    //Returns the filtered result (for checking)
+    private String filterAlphanumeric(String input) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (Character.isLetterOrDigit(c)) {
+                result.append(c);
+            }
+        }
+        return result.toString();
     }
 
 }

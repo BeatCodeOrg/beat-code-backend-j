@@ -14,4 +14,4 @@ edit `application.yml` with your MySQL password
 `mvn spring-boot:run`
 
 backend will be running on `http://localhost:8080`  
-got to beat-code-fullstack main branch for fullstack  
+go to beat-code-fullstack main branch for fullstack `git checkout main`  

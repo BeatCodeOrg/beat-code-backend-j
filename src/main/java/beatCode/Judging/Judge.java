@@ -22,6 +22,7 @@ import java.sql.Statement;
 
 // make this class for every user for every round of competition
 @Component
+// make this class for every user for every round of competition
 public class Judge {
 	static String apiKey = "api_key";
 	static int questionID; // questionID should correspond to database
@@ -160,6 +161,7 @@ public class Judge {
     	// do this for every single test case
     	for (int i = 0; i < allInputs.size(); i++) {
           try {
+        	  
         	// append this to the end of sourceCode for stdout
         	sourceCode = originalCode + "solution = Solution()\n" +
         		    "result = solution." + questionName + "(" + allInputs.get(i) + ")\n" +
@@ -203,7 +205,7 @@ public class Judge {
             // parse into a json object to access data
             JsonObject response = gson.fromJson(content.toString(), JsonObject.class);
             
-            if (response != null) {
+            if (response != null && response.has("token") && !response.get("token").isJsonNull()) {
             	// need to use token to get actual response that's in json format
     		    String token = response.get("token").getAsString();
 
@@ -266,9 +268,9 @@ public class Judge {
     			    }
     			    
     			    // pretty print final response: the json response, optional
-   			    Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
-   			    String prettyGetResultJson = prettyGson.toJson(getResultResponse);
-   			    System.out.println(prettyGetResultJson);
+//    			    Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
+//    			    String prettyGetResultJson = prettyGson.toJson(getResultResponse);
+//    			    System.out.println(prettyGetResultJson);
     			    
     			} catch (Exception e) {
     			    e.printStackTrace();
@@ -285,15 +287,18 @@ public class Judge {
     
     public static void main(String[] args) {
     	// two sum example: (question id is 1)
+    	// passes 2 test cases
     	String sourceCode = "from typing import List\n"
     			+ "class Solution:\n"
     			+ "    def twoSum(self, nums: List[int], target: int) -> List[int]:\n"
     			+ "        mylist = [0,1]\n"
     			+ "        return mylist\n";
+   
     	
     	// this is a twoSum python solution from leetcode, bruteforce
     	// this works
-    	sourceCode = "from typing import List\n"
+    	// passes all 3 test cases
+    	String sourceCode2 = "from typing import List\n"
     			+ "class Solution:\n"
     			+ "    def twoSum(self, nums: List[int], target: int) -> List[int]:\n"
     			+ "        n = len(nums)\n"
@@ -302,6 +307,13 @@ public class Judge {
     			+ "                if nums[i] + nums[j] == target:\n"
     			+ "                    return [i, j]\n"
     			+ "        return []\n";
+    	
+    	// passes 2 test cases
+    	String sourceCode3 = "from typing import List\n"
+    			+ "class Solution:\n"
+    			+ "    def twoSum(self, nums: List[int], target: int) -> List[int]:\n"
+    			+ "        mylist = [1,2]\n"
+    			+ "        return mylist\n";
     	
     	// length of longest substring example: (question id is 3)
 //    	String sourceCode = "class Solution:\n"
@@ -318,6 +330,6 @@ public class Judge {
 //				+ "    \n";
 //    	
     	int questionID = 1;
-    	int numTestsPassed = runCode(sourceCode, questionID);
+    	int numTestsPassed = runCode(sourceCode3, questionID);
     }
 }

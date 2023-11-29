@@ -28,19 +28,11 @@ public class UserController {
         String username = user.getUsername();
         String password = user.getPassword();
 
-        System.out.println(user.toString());
         return userService.createUser(username, password);
     }
 
-    @PostMapping("/login")
-    public AuthenticationResponse loginUser(@RequestBody UserDTO user) {
-        String username = user.getUsername();
-        String password = user.getPassword();
-
-        System.out.println("logging in user");
-        // Authenticate user based on username and password
-        // User authenticatedUser = userService.authenticateUser(username, password);
-
+    @GetMapping("/login/{username}/{password}")
+    public AuthenticationResponse loginUser(@PathVariable String username, @PathVariable String password) {
         return userService.loginUser(username, password);
     }
 

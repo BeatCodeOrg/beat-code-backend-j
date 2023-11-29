@@ -15,5 +15,6 @@ public class RoomRequestResponse {
     public RoomRequestResponse(String code, String message, String socketId) {
         this.roomCode = code;
         this.message = message;
+        this.socketId = socketId;
     }
 }

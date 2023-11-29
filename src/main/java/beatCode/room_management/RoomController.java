@@ -36,7 +36,7 @@ public class RoomController {
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<Room> getRoomByCode(@PathVariable String code) {
+    public RoomRequestResponse getRoomByCode(@PathVariable String code) {
         // Fetch room details (roomService.findRoomByCode(code))
     	Room room = roomService.findRoomByCode(code);// Retrieve room details
 
@@ -44,7 +44,10 @@ public class RoomController {
         // Send a WebSocket message to a specific room topic
         // messagingTemplate.convertAndSend("/topic/room/" + code, room);
 
-        return new ResponseEntity<>(room, HttpStatus.OK);
+        if (room == null) 
+            return new RoomRequestResponse("-1", "no-room", "temp-val");
+
+        return new RoomRequestResponse(room.getCode(), "found-room", "temp-val");
     }
 
     // chat, game all go through here

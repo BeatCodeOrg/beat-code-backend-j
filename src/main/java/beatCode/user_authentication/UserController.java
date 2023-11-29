@@ -23,30 +23,25 @@ public class UserController {
     }
 
     @PostMapping("/create") 
-    public ResponseEntity<?> createUser(@RequestBody UserDTO user) {
-    	// go to database
+    public AuthenticationResponse createUser(@RequestBody UserDTO user) {
+
+        String username = user.getUsername();
+        String password = user.getPassword();
+
         System.out.println(user.toString());
-        if (userService.findUserByUsername(user.getUsername()) != null) {
-            return ResponseEntity.badRequest().body("Username already exists");
-        }
-        User createdUser = userService.createUser(user.getUsername(), user.getPassword());
-        return ResponseEntity.ok(createdUser);
+        return userService.createUser(username, password);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody UserDTO user) {
+    public AuthenticationResponse loginUser(@RequestBody UserDTO user) {
         String username = user.getUsername();
         String password = user.getPassword();
 
         System.out.println("logging in user");
         // Authenticate user based on username and password
         // User authenticatedUser = userService.authenticateUser(username, password);
-        User authenticatedUser = new User(username, password);
-        if (authenticatedUser != null) {
-            return ResponseEntity.ok(authenticatedUser);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
+
+        return userService.loginUser(username, password);
     }
 
     @GetMapping("/{id}") 

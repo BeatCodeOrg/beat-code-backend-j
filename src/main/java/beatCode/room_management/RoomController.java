@@ -7,6 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.messaging.handler.annotation.*;
+
+import beatCode.room_management.response_objects.*;
+
 @RestController
 @RequestMapping("/rooms")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -52,26 +56,24 @@ public class RoomController {
 
     @MessageMapping("/room/connect/{roomCode}/{username}/{userId}")
     @SendTo("/topic/room/{roomCode}")
-    public SocketConnectionResponse connectToRoom(@DestinationVariable String roomCode, @DestinationVariable String username, @DestinationVariable String userId) {
+    public SocketActionResponse connectToRoom(@DestinationVariable String roomCode, @DestinationVariable String username, @DestinationVariable String userId) {
 
         // fetch room details with the roomCode
         // gonna need some sorta map of like a roomCode to a room 
         // ill get the room from the map and then add the user to the room
 
-        Room currRoom = findRoomByCode(roomCode);
+        Room currRoom = roomService.findRoomByCode(roomCode);
         if (currRoom == null)
-            return new SocketErrorResponse(username, username);
+            return new SocketErrorResponse(username, username, "no-room");
 
         currRoom.addUser(username);
 
-        return new SocketConnectionResponse(username, "all", currRoom.getUsers()));
+        return new SocketConnectionResponse(username, "all", currRoom.getUsers());
 
     // from : String 
     // to : String
     // function : String
     // data :
-        // on the top I'll need to add this guy as a subscriber to the topic 
-
         // broadcast a message back with an updated list of all the people in the current room
     }
 }

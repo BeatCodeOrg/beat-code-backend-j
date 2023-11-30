@@ -1,5 +1,4 @@
 package beatCode.room_management.response_objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public abstract class SocketActionResponse {
@@ -13,7 +12,7 @@ public abstract class SocketActionResponse {
     @JsonProperty("status")
     private String status; // status of request: success / failure
     
-    @JsonProerpty("action")
+    @JsonProperty("action")
     private String action; // action to be called
 
     public SocketActionResponse(String from, String to, String status, String action) {

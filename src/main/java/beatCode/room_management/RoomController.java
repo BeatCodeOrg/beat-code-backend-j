@@ -54,9 +54,9 @@ public class RoomController {
         return new RoomRequestResponse(room.getCode(), "found-room", "temp-val");
     }
 
-    @MessageMapping("/room/connect/{roomCode}/{username}/{userId}")
-    @SendTo("/topic/room/{roomCode}")
-    public SocketActionResponse connectToRoom(@DestinationVariable String roomCode, @DestinationVariable String username, @DestinationVariable String userId) {
+    @MessageMapping("/room/connect/{roomCode}/{username}")
+    @SendTo("/room/{roomCode}")
+    public SocketActionResponse connectToRoom(@DestinationVariable String roomCode, @DestinationVariable String username) {
 
         // fetch room details with the roomCode
         // gonna need some sorta map of like a roomCode to a room 

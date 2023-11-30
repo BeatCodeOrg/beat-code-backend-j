@@ -14,7 +14,6 @@ public class RoomController {
 
 	
     private final RoomService roomService;
-    
     private final SimpMessagingTemplate messagingTemplate;
 
     
@@ -51,15 +50,28 @@ public class RoomController {
         return new RoomRequestResponse(room.getCode(), "found-room", "temp-val");
     }
 
-    // chat, game all go through here
-    /*
-    @PostMapping("/{roomId}/processAction")
-    public ResponseEntity<String> processAction(
-            @PathVariable String roomId,
-            @RequestBody Map<String, Object> payload
-    ) {
-        roomService.handleAction(roomId, payload);
-        return ResponseEntity.ok("Action processed successfully");
+    @MessageMapping("/room/connect/{roomCode}/{username}/{userId}")
+    @SendTo("/topic/room/{roomCode}")
+    public SocketConnectionResponse connectToRoom(@DestinationVariable String roomCode, @DestinationVariable String username, @DestinationVariable String userId) {
+
+        // fetch room details with the roomCode
+        // gonna need some sorta map of like a roomCode to a room 
+        // ill get the room from the map and then add the user to the room
+
+        Room currRoom = findRoomByCode(roomCode);
+        if (currRoom == null)
+            return new SocketErrorResponse(username, username);
+
+        currRoom.addUser(username);
+
+        return new SocketConnectionResponse(username, "all", currRoom.getUsers()));
+
+    // from : String 
+    // to : String
+    // function : String
+    // data :
+        // on the top I'll need to add this guy as a subscriber to the topic 
+
+        // broadcast a message back with an updated list of all the people in the current room
     }
-    */
 }

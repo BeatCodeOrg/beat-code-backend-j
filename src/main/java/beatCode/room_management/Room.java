@@ -40,6 +40,10 @@ public class Room {
 
 	}
 
+    public String[] getUsers() {
+        return users.toArray(new String[users.size()]);
+    }
+
 	public String getCode() {
 		// TODO Auto-generated method stub
 		return code;

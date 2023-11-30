@@ -74,6 +74,12 @@ public class RoomService {
         }
         return null; // Return null if no Room object with the given code is found
     }
+
+
+
+
+
+
 	/*
     public void designateHost(String user, Room room) {
         room.setHost(user); // Assuming getUserId() retrieves the user's unique identifier

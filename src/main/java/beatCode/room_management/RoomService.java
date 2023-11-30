@@ -54,10 +54,12 @@ public class RoomService {
 	}
 
 	private String generateRoomCode() {
-        String roomCode = UUID.randomUUID().toString().substring(0, 8);
+        String roomCode = UUID.randomUUID().toString().substring(0, 6);
 
         while (takenRoomCodes.contains(roomCode))
-            roomCode = UUID.randomUUID().toString().substring(0, 8);
+            roomCode = UUID.randomUUID().toString().substring(0, 6);
+
+        takenRoomCodes.add(roomCode);
 
         return roomCode;
     }

@@ -68,9 +68,6 @@ public class RoomController {
         if (!currRoom.containsUser(username))
             currRoom.addUser(username);
 
-        System.out.println("--------- users ----------");
-        System.out.println(currRoom.getUsers().toString());
-
         return new SocketConnectionResponse(username, "all", currRoom.getUsers());
 
     // from : String 
@@ -78,5 +75,15 @@ public class RoomController {
     // function : String
     // data :
         // broadcast a message back with an updated list of all the people in the current room
+    }
+
+    @MessageMapping("start-game/{roomCode}")
+    @SendTo("/topic/room/{roomCode}/start-game")
+    public SocketActionResponse startGame(@DestinationVariable String roomCode) {
+        Room currRoom = roomService.findRoomByCode(roomCode);
+        if (currRoom == null)
+            return new SocketErrorResponse("server", "server", "no-room");
+
+        return new SocketActionResponse("server", "all", "starting", "start-game");
     }
 }

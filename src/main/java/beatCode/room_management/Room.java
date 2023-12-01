@@ -18,6 +18,10 @@ public class Room {
 		// this.host = user;
 	}
 
+    public boolean containsUser(String user) {
+        return users.contains(user);
+    }
+
 	public void setUsers(List<String> users) {
 		this.users = users;
 	}

@@ -12,11 +12,9 @@ import org.springframework.messaging.handler.annotation.*;
 import beatCode.room_management.response_objects.*;
 
 @RestController
-@RequestMapping("/rooms")
 @CrossOrigin(origins = "http://localhost:5173")
 public class RoomController {
 
-	
     private final RoomService roomService;
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -29,7 +27,8 @@ public class RoomController {
     }
 
 
-    @GetMapping("/create/{user}")
+    @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("rooms/create/{user}")
     public RoomRequestResponse createRoom(@PathVariable String user) {
         Room createdRoom = roomService.createRoom(user);
 
@@ -39,7 +38,7 @@ public class RoomController {
         return new RoomRequestResponse(createdRoom.getCode(), "success", "temp-val");
     }
 
-    @GetMapping("/{code}")
+    @GetMapping("rooms/{code}")
     public RoomRequestResponse getRoomByCode(@PathVariable String code) {
         // Fetch room details (roomService.findRoomByCode(code))
     	Room room = roomService.findRoomByCode(code);// Retrieve room details
@@ -54,8 +53,8 @@ public class RoomController {
         return new RoomRequestResponse(room.getCode(), "found-room", "temp-val");
     }
 
-    @MessageMapping("/room/connect/{roomCode}/{username}")
-    @SendTo("/room/{roomCode}")
+    @MessageMapping("connect/{roomCode}/{username}")
+    @SendTo("/topic/room/{roomCode}")
     public SocketActionResponse connectToRoom(@DestinationVariable String roomCode, @DestinationVariable String username) {
 
         // fetch room details with the roomCode
@@ -66,7 +65,11 @@ public class RoomController {
         if (currRoom == null)
             return new SocketErrorResponse(username, username, "no-room");
 
-        currRoom.addUser(username);
+        if (!currRoom.containsUser(username))
+            currRoom.addUser(username);
+
+        System.out.println("--------- users ----------");
+        System.out.println(currRoom.getUsers().toString());
 
         return new SocketConnectionResponse(username, "all", currRoom.getUsers());
 

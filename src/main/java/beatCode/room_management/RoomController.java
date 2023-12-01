@@ -102,7 +102,7 @@ public class RoomController {
 
         String username = payload.getUsername();
         String code = payload.getCode();
-        String questionId = payload.getQuestionId();
+        int questionId = payload.getQuestionId();
 
         int testsPassed = Judge.runCode(code, questionId);
         currRoom.updateScores(username, testsPassed);

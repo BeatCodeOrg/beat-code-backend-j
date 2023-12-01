@@ -9,11 +9,11 @@ public class SocketSubmitCodeResponse extends SocketActionResponse {
     private HashMap<String, GamePlayerInfo> gameState;
 
     @JsonProperty("totalTestCase")
-    private int totalTestCase;
+    private int totalTestCases;
 
     public SocketSubmitCodeResponse(String from, String to, HashMap<String, GamePlayerInfo> gameState, int totalTestCases) {
         super(from, to, "success", "submit-code");
         this.gameState = gameState;
-        this.totalTestCase = totalTestCases;
+        this.totalTestCases = totalTestCases;
     }
 }

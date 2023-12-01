@@ -21,10 +21,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 // make this class for every user for every round of competition
-@Component
 // make this class for every user for every round of competition
 public class Judge {
-	static String apiKey = "api_key";
+	static String apiKey = "f21cb1d818msh670072cc8b0f6a6p15d46cjsn20cd386acf2d";
 	static int questionID; // questionID should correspond to database
 	static String functionDef; 
 	static String questionName; 
@@ -39,6 +38,7 @@ public class Judge {
 	// how many more tests the user passed since the last time they clicked run
 	static int numAdditionalTestsPassed; 
 	
+
 	public Judge(int questionID) { // constructor
 		Judge.questionID = questionID;
 	}
@@ -58,7 +58,7 @@ public class Judge {
 		ResultSet rs = null;
 		String jdbcUrl = "jdbc:mysql://localhost:3306/beatcode_db";
 		String username = "root";
-		String password = "password";
+		String password = "Velayuthan27";
 		
 		try {
 			conn = DriverManager.getConnection(jdbcUrl + "?user=" + username + "&password=" + password);

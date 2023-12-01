@@ -51,14 +51,18 @@ public class Judge {
 		return numAdditionalTestsPassed;
 	}
 	
-	private static void makeDatabaseConn() {
+	private static void makeDatabaseConn(QuestionRepository qRepo, 
+        TestCaseRepository tRepo, 
+        TestCaseToQuestionRepository tqRepo) {
+
 		Connection conn = null;
 		Statement st = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String jdbcUrl = "jdbc:mysql://localhost:3306/beatcode_db";
+		String jdbcUrl = "jdbc:mysql://localhost:3306/project";
 		String username = "root";
 		String password = "Velayuthan27";
+
 		
 		try {
 			conn = DriverManager.getConnection(jdbcUrl + "?user=" + username + "&password=" + password);
@@ -66,11 +70,18 @@ public class Judge {
 			ps = conn.prepareStatement("SELECT * from questions WHERE id = " + questionID);
 			rs = ps.executeQuery();
 			
+            System.out.println("Made database connection...");
+            System.out.println(rs.getString("main_def"));
+
 			// get the main_def
 			while (rs.next()) {
 				String title = rs.getString("title");
 //				System.out.println ("title = " + title);
 				String functiondef = rs.getString("main_def"); 
+
+                System.out.println("-------------------------");
+                System.out.println(rs.getString("title"));
+
 				functionDef = functiondef;
 			}
 			if (rs != null) {
@@ -103,6 +114,7 @@ public class Judge {
 				}
 			}
 		} catch (SQLException sqle) {
+            System.out.println("dsafasdfas");
 			System.out.println ("SQLException: " + sqle.getMessage());
 		} finally {
 			try {
@@ -148,9 +160,12 @@ public class Judge {
 	
 	// call this function to run code
 	// returns the total number of test cases passed
-    public static int runCode(String sourceCode, int questionID) {
+    public static int runCode(String sourceCode, int questionID,
+        QuestionRepository qRepo, TestCaseRepository tRepo, 
+        TestCaseToQuestionRepository tqRepo) {
+
     	Judge.questionID = questionID;
-    	makeDatabaseConn();
+    	makeDatabaseConn(qRepo, tRepo, tqRepo);
     	setQuestionName();
     	
     	// reset to 0, this is to calculate how many more test cases user has passed since last time they ran the code
@@ -330,6 +345,6 @@ public class Judge {
 //				+ "    \n";
 //    	
     	int questionID = 1;
-    	int numTestsPassed = runCode(sourceCode3, questionID);
+    	// int numTestsPassed = runCode(sourceCode3, questionID);
     }
 }

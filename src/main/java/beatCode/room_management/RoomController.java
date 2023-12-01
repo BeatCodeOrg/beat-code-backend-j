@@ -15,6 +15,9 @@ import beatCode.room_management.competition.CodeSubmitPayload;
 import beatCode.room_management.competition.GamePlayerInfo;
 import beatCode.room_management.competition.code_submission.Judge;
 
+
+
+
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
 public class RoomController {
@@ -104,7 +107,7 @@ public class RoomController {
         String code = payload.getCode();
         int questionId = payload.getQuestionId();
 
-        int testsPassed = Judge.runCode(code, questionId);
+        int testsPassed = roomService.runCode(code, questionId);
         currRoom.updateScores(username, testsPassed);
 
         return new SocketSubmitCodeResponse(username, "all", currRoom.getGameState(), 3);

@@ -9,12 +9,26 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import beatCode.room_management.competition.code_submission.QuestionRepository;
+import beatCode.room_management.competition.code_submission.TestCaseRepository;
+import beatCode.room_management.competition.code_submission.TestCaseToQuestionRepository;
+
+import beatCode.room_management.competition.code_submission.Judge;
+
 @Service
 public class RoomService {
 	// enable GameController to access rooms?
     public ArrayList<Room> rooms = new ArrayList<Room>();
     public ArrayList<String> takenRoomCodes = new ArrayList<String>();
   
+    @Autowired
+    QuestionRepository questionRepository;
+
+    @Autowired
+    TestCaseRepository testCaseRepository;
+
+    @Autowired
+    TestCaseToQuestionRepository testCaseToQuestionRepository;
 
     @Autowired
     public RoomService() {
@@ -76,74 +90,9 @@ public class RoomService {
     }
 
 
-
-
-
-
-	/*
-    public void designateHost(String user, Room room) {
-        room.setHost(user); // Assuming getUserId() retrieves the user's unique identifier
-       // user.setAsHost(); // Designate the user as the host
+    public int runCode(String sourceCode, int questionId) {
+        return Judge.runCode(sourceCode, questionId, questionRepository, testCaseRepository, testCaseToQuestionRepository);
     }
-    */
-
-    /*
-    public void handleAction(String roomID, Map<String, Object> payload) {
-        String action = (String) payload.get("action");
-        Room room = null;
-        int userId = (int) payload.get("userId");
-        int roomId = Integer.parseInt(roomID);
-        User user = null;
-        switch (action) {
-        
-            
-            case "joinRoom":
-                user = getUserByID(userId);
-                String code = (String) payload.get("code");
-                room = findRoomByCode(code);
-                if (room != null) {
-                    joinRoom(user, room);
-                }
-                break;
-            case "sendChatMessage":
-                // Call a method to handle chat message
-                chatService.handleChatMessage(roomId, (String) payload.get("userId"), (String) payload.get("message"));
-                break;
-            case "startGame":
-                // Call a method to handle game start
-                String type = (String) payload.get("type");
-                String difficulty = (String) payload.get("difficulty");
-                Question question = QuestionService.generateQuestion(difficulty, type);
-                room = findRoomById(roomId);
-                // loop through all users in the room, start game
-                gameService.startGame(userId, question);
-                break;
-            case "submitCode":
-                // Extract necessary data from payload and delegate to GameService for code submission
-                gameService.submitCode(roomId, userId, (String) payload.get("code"));
-                break;
-            case "getScore":
-                // Extract necessary data from payload and delegate to GameService to get user's score
-                int score = gameService.getScore(roomId, userId);
-                // Handle the score - return it, send it to the frontend, etc.
-                // Example: You can create a response and return it to the client
-                Map<String, Object> response = new HashMap<>();
-                response.put("userId", userId);
-                response.put("score", score);
-                // Return the response to the client or process it further
-                break;
-            case "endGame":
-                // front end first call submit code for every user to update the ranking and sore in the backend
-                endGame(roomId);
-                break;
-            default:
-                // Handle unknown or unsupported actions
-                throw new IllegalArgumentException("Unknown action: " + action);
-        }
-    }
-    */
-
-
 
 
 

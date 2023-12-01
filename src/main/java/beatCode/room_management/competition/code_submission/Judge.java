@@ -23,7 +23,7 @@ import java.sql.Statement;
 // make this class for every user for every round of competition
 // make this class for every user for every round of competition
 public class Judge {
-	static String apiKey = "f21cb1d818msh670072cc8b0f6a6p15d46cjsn20cd386acf2d";
+	static String apiKey = "11d108ea98msh0b32b603285ab50p1ab7e9jsn64159b60167f";
 	static int questionID; // questionID should correspond to database
 	static String functionDef; 
 	static String questionName; 
@@ -69,7 +69,6 @@ public class Judge {
         String title = problem.getTitle();
 
         String functiondef = problem.getSkeletonCode(); 
-        System.out.println(functiondef);
 
 
         functionDef = functiondef;
@@ -85,9 +84,6 @@ public class Judge {
         for (TestCaseToQuestion testcase : testcases)
             testcaseIDs.add(testcase.getTestCaseId());
         
-        System.out.println("testcases: " + testcaseIDs.toString());
-
-
         // get the test case info for each testcase_id
         TestCase testcase;
         for (int i = 0; i < testcaseIDs.size(); i++) {
@@ -134,15 +130,17 @@ public class Judge {
     	
     	// reset to 0, this is to calculate how many more test cases user has passed since last time they ran the code
     	numAdditionalTestsPassed = 0; 
+        totalTestsPassed = 0;
     	
     	String originalCode = sourceCode;
     	
+        System.out.println("This is the size: " + allInputs.size());
     	// do this for every single test case
     	for (int i = 0; i < allInputs.size(); i++) {
           try {
         	  
         	// append this to the end of sourceCode for stdout
-        	sourceCode = originalCode + "solution = Solution()\n" +
+        	sourceCode = originalCode + "\nsolution = Solution()\n" +
         		    "result = solution." + questionName + "(" + allInputs.get(i) + ")\n" +
         		    "print(result)";
         	
@@ -213,6 +211,7 @@ public class Judge {
 
     			        // parse json response using gson into a json object
     			        getResultResponse = gson.fromJson(getResultContent.toString(), JsonObject.class);
+                        System.out.println(getResultResponse.toString());
     			        
     			        // wait for response
     			        Thread.sleep(2000); 

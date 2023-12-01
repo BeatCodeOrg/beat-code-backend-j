@@ -8,6 +8,8 @@ import beatCode.room_management.competition.GamePlayerInfo;
 
 public class Room {
 
+    private static String[] playerColors = {"red", "orange", "blue", "green", "purple", "black", "white"};
+
 	private ArrayList<String> users = new ArrayList<>(); // username in the database
 	private String code; 
 	private HashMap<String, GamePlayerInfo> gameState;
@@ -25,7 +27,8 @@ public class Room {
     public void initGameState() {
         gameState = new HashMap<String, GamePlayerInfo>();
         for (int i = 0; i < users.size(); i++)
-            gameState.put(users.get(i), new GamePlayerInfo(users.get(i)));
+            gameState.put(users.get(i), 
+                new GamePlayerInfo(users.get(i), playerColors[i]));
     }
 
     public void updateScores(String user, int score) {

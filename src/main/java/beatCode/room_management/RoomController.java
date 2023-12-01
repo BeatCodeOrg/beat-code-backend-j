@@ -15,6 +15,7 @@ import beatCode.room_management.competition.CodeSubmitPayload;
 import beatCode.room_management.competition.GamePlayerInfo;
 import beatCode.room_management.competition.code_submission.Judge;
 
+import beatCode.room_management.competition.code_submission.Question;
 
 
 
@@ -91,8 +92,12 @@ public class RoomController {
         if (currRoom == null)
             return new SocketErrorResponse("server", "server", "no-room");
 
+        int generatedQuestionId = 1;
+        Question question = roomService.getQuestion(generatedQuestionId);
+
         currRoom.initGameState();
-        return new SocketStartGameResponse("server", "all", 1, "temp-val");
+        return new SocketStartGameResponse("server", "all", question.getId(), 
+            question.getSkeletonCode(), currRoom.getGameState());
     }
 
 

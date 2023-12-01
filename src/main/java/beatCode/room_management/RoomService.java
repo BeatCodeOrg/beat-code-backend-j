@@ -14,6 +14,7 @@ import beatCode.room_management.competition.code_submission.TestCaseRepository;
 import beatCode.room_management.competition.code_submission.TestCaseToQuestionRepository;
 
 import beatCode.room_management.competition.code_submission.Judge;
+import beatCode.room_management.competition.code_submission.Question;
 
 @Service
 public class RoomService {
@@ -89,6 +90,10 @@ public class RoomService {
         return null; // Return null if no Room object with the given code is found
     }
 
+
+    public Question getQuestion(int questionId) {
+        return questionRepository.findQuestionByQuestionId(questionId);
+    }
 
     public int runCode(String sourceCode, int questionId) {
         return Judge.runCode(sourceCode, questionId, questionRepository, testCaseRepository, testCaseToQuestionRepository);

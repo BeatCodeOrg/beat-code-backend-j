@@ -11,6 +11,9 @@ import org.springframework.messaging.handler.annotation.*;
 
 import beatCode.room_management.response_objects.*;
 
+import beatCode.room_management.competition.CodeSubmitPayload;
+import beatCode.room_management.competition.GamePlayerInfo;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
 public class RoomController {
@@ -84,6 +87,21 @@ public class RoomController {
         if (currRoom == null)
             return new SocketErrorResponse("server", "server", "no-room");
 
+        currRoom.initGameState();
         return new SocketActionResponse("server", "all", "starting", "start-game");
     }
+
+
+    @MessageMapping("submit-code/{roomCode}")
+    @SendTo("/topic/room/{roomCode}/update-score")
+    public GamePlayerInfo[] submitCode(@DestinationVariable String roomCode, @Payload CodeSubmitPayload payload) {
+        Room currRoom = roomService.findRoomByCode(roomCode);
+        if (currRoom == null)
+            return null;
+
+
+        currRoom.updateScores(players);
+        return players;
+    }
+
 }

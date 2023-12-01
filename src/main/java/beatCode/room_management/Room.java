@@ -10,6 +10,7 @@ public class Room {
 	private String code; // romecode
 	private HashMap<String, Integer> scoreMap;
 	private ArrayList<String> ranking;
+    private GamePlayerInfo[] gameState;
 
 	// Constructor, getters, and setters for Room class
 
@@ -20,6 +21,12 @@ public class Room {
 
     public boolean containsUser(String user) {
         return users.contains(user);
+    }
+
+    public void initGameState() {
+        gameState = new GamePlayerInfo[users.length];
+        for (int i = 0; i < users.length; i++)
+            gameState[i] = new GamePlayerInfo(users[i]);
     }
 
 	public void setUsers(List<String> users) {

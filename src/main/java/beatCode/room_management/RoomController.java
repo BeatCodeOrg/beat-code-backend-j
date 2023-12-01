@@ -13,6 +13,7 @@ import beatCode.room_management.response_objects.*;
 
 import beatCode.room_management.competition.CodeSubmitPayload;
 import beatCode.room_management.competition.GamePlayerInfo;
+import beatCode.room_management.competition.code_submission.Judge;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -88,20 +89,25 @@ public class RoomController {
             return new SocketErrorResponse("server", "server", "no-room");
 
         currRoom.initGameState();
-        return new SocketActionResponse("server", "all", "starting", "start-game");
+        return new SocketStartGameResponse("server", "all", 1, "temp-val");
     }
 
 
     @MessageMapping("submit-code/{roomCode}")
     @SendTo("/topic/room/{roomCode}/update-score")
-    public GamePlayerInfo[] submitCode(@DestinationVariable String roomCode, @Payload CodeSubmitPayload payload) {
+    public SocketActionResponse submitCode(@DestinationVariable String roomCode, @Payload CodeSubmitPayload payload) {
         Room currRoom = roomService.findRoomByCode(roomCode);
         if (currRoom == null)
             return null;
 
+        String username = payload.getUsername();
+        String code = payload.getCode();
+        String questionId = payload.getQuestionId();
 
-        currRoom.updateScores(players);
-        return players;
+        int testsPassed = Judge.runCode(code, questionId);
+        currRoom.updateScores(username, testsPassed);
+
+        return new SocketSubmitCodeResponse(username, "all", currRoom.getGameState(), 3);
     }
 
 }

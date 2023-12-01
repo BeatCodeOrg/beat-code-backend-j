@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import beatCode.room_management.competition.GamePlayerInfo;
+
 public class Room {
 
 	private List<String> users = new ArrayList<>(); // username in the database
 	private String code; // romecode
-	private HashMap<String, Integer> scoreMap;
 	private ArrayList<String> ranking;
-    private GamePlayerInfo[] gameState;
+	private HashMap<String, GamePlayerInfo> gameState;
 
 	// Constructor, getters, and setters for Room class
 
@@ -24,9 +25,17 @@ public class Room {
     }
 
     public void initGameState() {
-        gameState = new GamePlayerInfo[users.length];
+        gameState = new HashMap<String, GamePlayerInfo>();
         for (int i = 0; i < users.length; i++)
-            gameState[i] = new GamePlayerInfo(users[i]);
+            gameState[users[i]] = new GamePlayerInfo(users[i]);
+    }
+
+    public void updateScores(String user, int score) {
+        gameState[user].updateTestsPassed(score);
+    }
+
+    public HashMap<String, GamePlayerInfo> getGameState() {
+        return gameState;
     }
 
 	public void setUsers(List<String> users) {

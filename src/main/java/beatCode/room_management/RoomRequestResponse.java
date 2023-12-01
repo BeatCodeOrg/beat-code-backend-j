@@ -6,7 +6,7 @@ public class RoomRequestResponse {
     @JsonProperty("room_code")
     private String roomCode;
 
-    @JsonProperty("message")
+    @JsonProperty("message") // no-room / found-room
     private String message;
 
     @JsonProperty("socket_id")

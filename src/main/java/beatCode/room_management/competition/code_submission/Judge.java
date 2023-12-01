@@ -64,76 +64,40 @@ public class Judge {
 		String password = "Velayuthan27";
 
 		
-		try {
-			conn = DriverManager.getConnection(jdbcUrl + "?user=" + username + "&password=" + password);
-			st = conn.createStatement();
-			ps = conn.prepareStatement("SELECT * from questions WHERE id = " + questionID);
-			rs = ps.executeQuery();
-			
-            System.out.println("Made database connection...");
-            System.out.println(rs.getString("main_def"));
+        Question problem = qRepo.findQuestionByQuestionId(questionID);
 
-			// get the main_def
-			while (rs.next()) {
-				String title = rs.getString("title");
-//				System.out.println ("title = " + title);
-				String functiondef = rs.getString("main_def"); 
+        String title = problem.getTitle();
 
-                System.out.println("-------------------------");
-                System.out.println(rs.getString("title"));
+        String functiondef = problem.getSkeletonCode(); 
+        System.out.println(functiondef);
 
-				functionDef = functiondef;
-			}
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
-			allInputs = new Vector<>();
-			allExpectedOutputs = new Vector<>();
-			// get all of the test cases info
-			ps = conn.prepareStatement("SELECT * FROM question_test_cases WHERE question_id = " + questionID);
-			rs = ps.executeQuery();
-			Vector<Integer> testcaseIDs = new Vector<>();
-			while(rs.next()) {
-				int testcase_id = rs.getInt("test_case_id");
-				testcaseIDs.add(testcase_id);
-			}
-			// get the test case info for each testcase_id
-			for (int i = 0; i < testcaseIDs.size(); i++) {
-				ps = conn.prepareStatement("SELECT * FROM test_cases WHERE test_case_id = " + testcaseIDs.get(i));
-				rs = ps.executeQuery();
-				while(rs.next()) {
-					String input = rs.getString("input");
-					String output = rs.getString("output");
-//					System.out.println(input);
-//					System.out.println(output);
-					allInputs.add(input);
-					allExpectedOutputs.add(output);
-				}
-			}
-		} catch (SQLException sqle) {
-            System.out.println("dsafasdfas");
-			System.out.println ("SQLException: " + sqle.getMessage());
-		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (st != null) {
-					st.close();
-				}
-				if (ps != null) {
-					ps.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException sqle) {
-				System.out.println("sqle: " + sqle.getMessage());
-			}
-		}
+
+        functionDef = functiondef;
+
+        allInputs = new Vector<>();
+        allExpectedOutputs = new Vector<>();
+        // get all of the test cases info
+
+        Vector<Integer> testcaseIDs = new Vector<>();
+
+        TestCaseToQuestion[] testcases = tqRepo.findAllTestCaseToQuestionByQuestionId(questionID);
+
+        for (TestCaseToQuestion testcase : testcases)
+            testcaseIDs.add(testcase.getTestCaseId());
+        
+        System.out.println("testcases: " + testcaseIDs.toString());
+
+
+        // get the test case info for each testcase_id
+        TestCase testcase;
+        for (int i = 0; i < testcaseIDs.size(); i++) {
+            // ps = conn.prepareStatement("SELECT * FROM test_cases WHERE test_case_id = " + testcaseIDs.get(i));
+            testcase = tRepo.findTestCaseByTestCaseId(testcaseIDs.get(i));
+
+            allInputs.add(testcase.getInput());
+            allExpectedOutputs.add(testcase.getOutput());
+        }
+		
 	}
 	
 	private static void setQuestionName() {

@@ -1,4 +1,2 @@
-# beat-code-backend
-
-### Main code on branch time-to-socket-up
-
+# Backend of BeatCode
+Written in Java Springboot
